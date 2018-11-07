@@ -4,6 +4,7 @@ import socket
 import subprocess
 import sys
 
+
 hostname = socket.gethostname()
 
 # Remove anything with "Ching" and "models/research/lfads"
@@ -21,12 +22,8 @@ else:
 
 sys.path += python_paths
 
-if len(sys.argv) != 2:
-    print("Usage: %s </path/to/run_lfadsqueue.py>" % (sys.argv[0]))
-    sys.exit(1)
-
-file_name = sys.argv[1]
-sys.path.append(os.path.dirname(file_name))
+lfadsqueue_filename = '/z/ELZ/VS265/generated/latest/run_lfadsqueue.py'
+sys.path.append(os.path.dirname(lfadsqueue_filename))
 
 import pdb; pdb.set_trace()
 from run_lfadsqueue import task_specs

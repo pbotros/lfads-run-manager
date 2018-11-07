@@ -1,10 +1,10 @@
 % Identify the datasets you'll be using
-dc = BmiExperiment.DatasetCollection('/Volumes/DATA_01/ELZ/VS265/');
+dc = BmiExperiment.DatasetCollection('Z:\\ELZ\\VS265');
 ds = BmiExperiment.Dataset(dc, 'PacoBMI_days.mat', 'Day01'); % adds this dataset to the collection
 dc.loadInfo; % loads dataset metadata
 
 % Run a single model for each dataset, and one stitched run with all datasets
-runRoot = '/Volumes/DATA_01/ELZ/VS265/generated';
+runRoot = 'Z:\\ELZ\\VS265\\generated';
 rc = BmiExperiment.RunCollection(runRoot, 'latest', dc);
 
 % Setup hyperparameters, 4 sets with number of factors swept through 2,4,6,8
