@@ -43,15 +43,34 @@ classdef Run < LFADS.Run
 
             data = dataset.loadData();
 
-            % leave separated by target, hardcode a target
-            out.counts = data.spikes;
+            trialTimeBinCounts = [];
+            for i = 1:size(data, 1)
+                timeBinCount = size(data{i}, 1);
+                trialTimeBinCounts(size(trialTimeBinCounts, 2) + 1) = timeBinCount;
+            end
+            minTimeBinCounts = min(trialTimeBinCounts);
+            nTrials = size(data, 1);
+            nTime = minTimeBinCounts;
+            nChannels = size(data{1}, 2);
+
+            spikes = zeros(nTrials, nChannels, nTime, 1);
             
+            for trialIdx = 1:nTrials
+                for channelIdx = 1:nChannels
+                    for timeIdx = 1:nTime
+                        trial_data = data{trialIdx};
+                        spikes(trialIdx, channelIdx, timeIdx) = trial_data(timeIdx, channelIdx);
+                    end
+                end
+            end
+            % leave separated by target, hardcode a target
+            out.counts = spikes;
             out.timeVecMs = 100 * ((1:size(out.counts, 3)));
             % TODO: make the last time bin the appropriate time
             
             % Not using any conditions for now
             out.conditionId = [];
-            
+
             % Not ground truth
             out.truth = [];
         end

@@ -965,11 +965,12 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                         % save the rebinned spike counts and condition ids
                         % too
                         counts = cat(3, seqData{iDS}.y); % nNeurons x nTime x nChannels
-                        if isnumeric(seqData{iDS}(1).conditionId)
-                            conditionId = cat(1, seqData{iDS}.conditionId);
-                        else
-                            conditionId = LFADS.Utils.makecol({seqData{iDS}.conditionId});
-                        end
+                        conditionId = 0;
+%                         if isnumeric(seqData{iDS}(1).conditionId)
+%                             conditionId = cat(1, seqData{iDS}.conditionId);
+%                         else
+%                             conditionId = LFADS.Utils.makecol({seqData{iDS}.conditionId});
+%                         end
 
                         % optionally include ground truth
                         extra = {};
