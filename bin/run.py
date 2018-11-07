@@ -38,24 +38,25 @@ subprocess_env['PYTHONPATH'] = ':'.join(sys.path)
 subprocess_env['PATH'] = ':'.join(subprocess_env['PATH'].split(':') + sys.path)
 print(subprocess_env['PATH'])
 
+
+def correct_paths(content):
+    if running_on_windows:
+        return content.replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', '/z/ELZ/VS265/generated/latest')
+    else:
+        return content.replace('/z/ELZ/VS265/generated/latest', '/Volumes/DATA_01/ELZ/VS265/generated/latest')
+
+
 for task_spec in task_specs:
     print("Running task %s. spec=%s" % (task_spec['name'], task_spec))
     command_split = task_spec['command'].split(" ")
-    lfads_train_filename = command_split[1]
-    if running_on_windows:
-        f = open(lfads_train_filename, 'r')
-        replaced = f.read().replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', '/z/ELZ/VS265/generated/latest')
-        f.close()
-        f = open(lfads_train_filename, 'w')
-        f.write(replaced)
-        f.close()
-    else:
-        f = open(lfads_train_filename, 'r')
-        replaced = f.read().replace('/z/ELZ/VS265/generated/latest', '/Volumes/DATA_01/ELZ/VS265/generated/latest')
-        f.close()
-        f = open(lfads_train_filename, 'w')
-        f.write(replaced)
-        f.close()
+    lfads_train_filename = correct_paths(command_split[1])
+
+    f = open(lfads_train_filename, 'r')
+    replaced = correct_paths(f.read())
+    f.close()
+    f = open(lfads_train_filename, 'w')
+    f.write(replaced)
+    f.close()
 
     # Edit file on disk to normalize
     s = subprocess.check_call(command_split, env=subprocess_env)
