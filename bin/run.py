@@ -1,5 +1,7 @@
 #!/usr/bin/env python
+import ntpath
 import os
+import re
 import socket
 import subprocess
 import sys
@@ -40,9 +42,10 @@ subprocess_env['PATH'] = ':'.join(subprocess_env['PATH'].split(':') + sys.path)
 
 def correct_paths(content):
     if running_on_windows:
-        return content.replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', 'Z:\\\\ELZ\\\\VS265\\\\generated\\\\latest')
-    else:
-        return content.replace('Z:\\\\ELZ\\\\VS265\\\\generated\\\\latest', '/Volumes/DATA_01/ELZ/VS265/generated/latest')
+        for original in re.findall('/Volumes/DATA_01/ELZ/VS265/generated/latest/.*/lfads_train.sh', content):
+            replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', '')))
+            content = content.replace(original, replaced)
+    return content
 
 
 for task_spec in task_specs:
