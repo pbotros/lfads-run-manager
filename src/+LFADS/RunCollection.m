@@ -414,7 +414,8 @@ classdef RunCollection < handle & matlab.mixin.CustomDisplay & matlab.mixin.Copy
             else
                 oneTaskStr = ', one_task_per_gpu=False';
             end
-            fprintf(fid, 'tasks = lq.run_lfads_queue(queue_name, tensorboard_script, task_specs, gpu_list=gpu_list%s%s%s)\n\n', maxStr, donefileStr, oneTaskStr);
+            fprintf(fid, 'if __name__ == "__main__":\n');
+            fprintf(fid, '    tasks = lq.run_lfads_queue(queue_name, tensorboard_script, task_specs, gpu_list=gpu_list%s%s%s)\n\n', maxStr, donefileStr, oneTaskStr);
             fclose(fid);
         end
 

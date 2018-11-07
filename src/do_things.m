@@ -27,4 +27,4 @@ rc.prepareForLFADS();
 
 % Write a python script that will train all of the LFADS runs using a
 % load-balancer against the available CPUs and GPUs
-rc.writeShellScriptRunQueue('display', 0, 'virtualenv', 'tensorflow');
+rc.writeShellScriptRunQueue('display', 0);
