@@ -18,7 +18,10 @@ import numpy as np
 import time
 import shlex
 from multiprocessing import Process, Queue, cpu_count, Lock
-from queue import Empty
+try:
+    from queue import Empty
+except ImportError:
+    from Queue import Empty
 import sys, traceback
 import errno
 
