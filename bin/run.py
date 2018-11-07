@@ -44,7 +44,7 @@ def correct_paths(content):
     if running_on_windows:
         for original in re.findall('/Volumes/DATA_01/ELZ/VS265/generated/latest/.*/lfads_train.sh', content):
             replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', '')))
-            content = content.replace(original, replaced).replace('\\', '\\\\\\\\')
+            content = content.replace(original, replaced).replace('\\', '\\\\\\')
     return content
 
 
