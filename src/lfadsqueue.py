@@ -105,10 +105,10 @@ def query_gpu_status():
     Returns:
         gpu_status (list of dicts) : fields memfree (MiB), memtotal (MiB), name
     """
-    nvidia_out = subprocess.check_output(['nvidia-smi',
+    nvidia_out = str(subprocess.check_output(['nvidia-smi',
                                           '--query-gpu=name,memory.free,memory.total,gpu_uuid',
-                                          '--format=csv,noheader,nounits'])
-    nvidia_with_header = "name,memfree,memtotal,uuid\n" + str(nvidia_out)
+                                          '--format=csv,noheader,nounits']))
+    nvidia_with_header = "name,memfree,memtotal,uuid\n" + nvidia_out
 
 
     # parse output of nvidia-smi query
@@ -121,9 +121,9 @@ def query_gpu_status():
                                     uuid=info['uuid'].strip()))
 
     # now figure out how many python processes are running on each gpu
-    nvidia_out = subprocess.check_output(['nvidia-smi',
+    nvidia_out = str(subprocess.check_output(['nvidia-smi',
                                           '--query-compute-apps=process_name,gpu_uuid',
-                                          '--format=csv,noheader,nounits'])
+                                          '--format=csv,noheader,nounits']))
     nvidia_with_header = "pname,uuid\n" + nvidia_out
 
     # parse output of nvidia-smi query
@@ -234,7 +234,7 @@ def follow_file(file):
             yield line
 
 def get_tail_file(filepath, nlines=3):
-    return subprocess.check_output(shlex.split('tail -n {} {}'.format(nlines, filepath)))
+    return str(subprocess.check_output(shlex.split('tail -n {} {}'.format(nlines, filepath))))
 
 def touch_file(outfile):
     # mkdir -p
@@ -255,7 +255,7 @@ def touch_file(outfile):
 
 def get_list_tmux_sessions():
     with mutex:
-        return subprocess.check_output(shlex.split("tmux list-sessions -F '#{session_name}'")).splitlines()
+        return str(subprocess.check_output(shlex.split("tmux list-sessions -F '#{session_name}'")).splitlines())
 
 def check_tmux_session_exists(session):
     return session in get_list_tmux_sessions()
