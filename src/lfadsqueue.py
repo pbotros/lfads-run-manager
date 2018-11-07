@@ -108,7 +108,7 @@ def query_gpu_status():
     nvidia_out = subprocess.check_output(['nvidia-smi',
                                           '--query-gpu=name,memory.free,memory.total,gpu_uuid',
                                           '--format=csv,noheader,nounits'])
-    nvidia_with_header = "name,memfree,memtotal,uuid\n" + nvidia_out
+    nvidia_with_header = "name,memfree,memtotal,uuid\n" + str(nvidia_out)
 
 
     # parse output of nvidia-smi query
