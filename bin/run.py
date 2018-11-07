@@ -55,9 +55,9 @@ def correct_paths_research(content):
         if len(matches) == 0:
             break
         original = matches[0]
-        replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', '')))
+        replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', ''))).replace('\\', '\\\\\\')
         print("Replacing %s to %s" % (original, replaced))
-        content = content.replace(original, replaced).replace('\\', '\\\\\\')
+        content = content.replace(original, replaced)
     return content
 
 
@@ -67,9 +67,9 @@ def correct_paths_generated(content):
         if len(matches) == 0:
             break
         original = matches[0]
-        replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', '')))
+        replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', ''))).replace('\\', '\\\\\\')
         print("Replacing %s to %s" % (original, replaced))
-        content = content.replace(original, replaced).replace('\\', '\\\\\\')
+        content = content.replace(original, replaced)
     return content
 
 
