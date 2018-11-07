@@ -61,8 +61,9 @@ for task_spec in task_specs:
     lfads_train_filename = correct_paths(command_split[1])
 
     f = open(lfads_train_filename, 'r')
+    read = f.read()
     import pdb; pdb.set_trace()
-    replaced = correct_paths(f.read())
+    replaced = correct_paths(read)
     f.close()
     f = open(lfads_train_filename, 'w')
     f.write(replaced)
