@@ -5,13 +5,17 @@ import subprocess
 import sys
 
 hostname = socket.gethostname()
+
+# Remove anything with "Ching" and "models/research/lfads"
+sys.path = [p for p in sys.path if not ('Ching' in p and 'models/research/lfads' in p)]
+
 python_paths = []
 if hostname == "pbotros.local":
     python_paths.append(os.path.expanduser("~/Development/models/research/lfads"))
     python_paths.append(os.path.expanduser("~/Development/lfads-run-manager/src"))
 elif hostname == "DESKTOP-EQ0F9DU":
     python_paths.append("/z/ELZ/VS265/lfads-run-manager/src")
-    python_paths.append("~/Documents/Ching/models/research/lfads")
+    python_paths.append("/z/ELZ/VS265/models/research/src")
 else:
     print("Unknown hostname %s. Not doing import paths automatically." % hostname)
 
