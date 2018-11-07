@@ -44,8 +44,15 @@ subprocess_env['PATH'] = ':'.join(subprocess_env['PATH'].split(':') + sys.path)
 
 def correct_paths(content):
     if running_on_windows:
+        content = correct_paths_research(content)
+        content = correct_paths_generated(content)
+    return content
+
+
+def correct_paths_research(content):
+    if running_on_windows:
         while True:
-            matches = re.findall(r'/Volumes/DATA_01/ELZ/VS265/generated/latest/[A-Za-z0-9/_.-]*', content)
+            matches = re.findall(r'/Volumes/DATA_01/ELZ/VS265/models/research/lfads/[A-Za-z0-9/_.-]*', content)
             if len(matches) == 0:
                 break
             original = matches[0]
@@ -53,6 +60,18 @@ def correct_paths(content):
             print("Replacing %s to %s" % (original, replaced))
             content = content.replace(original, replaced).replace('\\', '\\\\\\')
     return content
+
+
+def correct_paths_generated(content):
+    while True:
+        matches = re.findall(r'/Volumes/DATA_01/ELZ/VS265/generated/latest/[A-Za-z0-9/_.-]*', content)
+        if len(matches) == 0:
+            break
+        original = matches[0]
+        replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', '')))
+        print("Replacing %s to %s" % (original, replaced))
+        content = content.replace(original, replaced).replace('\\', '\\\\\\')
+        return content
 
 
 for task_spec in task_specs:
