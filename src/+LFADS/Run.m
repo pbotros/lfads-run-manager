@@ -1085,7 +1085,7 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             p.addParameter('virtualenv', '', @ischar); % prepend source activate environment name
 
             p.addParameter('posterior_mean_kind', '', @ischar); % for posterior mean sampling
-
+            p.addParameter('python_version', 2, @isscalar);
             p.parse(varargin{:});
 
             f = r.fileShellScriptLFADSTrain;
@@ -1095,7 +1095,8 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                 'cuda_visible_devices', p.Results.cuda_visible_devices, ...
                 'display', p.Results.display, ...
                 'useTmuxSession', false, ...
-                'teeOutput', false); % teeify later
+                'teeOutput', false, ...
+                'python_version', 3); % teeify later
 
             if p.Results.appendPosteriorMeanSample
                 % run only if train succeeds
@@ -1104,7 +1105,8 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                     'cuda_visible_devices', p.Results.cuda_visible_devices, ...
                     'useTmuxSession', false, ...
                     'posterior_mean_kind', p.Results.posterior_mean_kind, ...
-                    'teeOutput', false); % teeify later
+                    'teeOutput', false, ...
+                    'python_version', 3); % teeify later
 
                 if p.Results.appendWriteModelParams
                     % run only if train succeeds
@@ -1112,7 +1114,8 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                         'path_run_lfads_py', p.Results.path_run_lfads_py, ...
                         'cuda_visible_devices', p.Results.cuda_visible_devices, ...
                         'useTmuxSession', false, ...
-                        'teeOutput', false); % teeify later
+                        'teeOutput', false, ...
+                        'python_version', 3); % teeify later
                     if p.Results.teeOutput
                         trainString = sprintf('(%s && %s && %s)', trainString, pmString, writeParamsString);
                     else
@@ -1170,10 +1173,12 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             p.addParameter('useTmuxSession', false, @islogical);
             p.addParameter('keepSessionAlive', true, @islogical);
             p.addParameter('teeOutput', false, @islogical);
+            p.addParameter('python_version', 2, @isscalar);
             p.parse(varargin{:});
 
-            outputString = sprintf(['python %s --data_dir=%s --data_filename_stem=lfads ' ...
+            outputString = sprintf(['%s %s --data_dir=%s --data_filename_stem=lfads ' ...
                 '--lfads_save_dir=%s'], ...
+                r.python_str(p), ...
                 p.Results.path_run_lfads_py, ...
                 LFADS.Utils.GetFullPath(r.pathLFADSInput), LFADS.Utils.GetFullPath(r.pathLFADSOutput));
 
@@ -1201,6 +1206,14 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                 outputString = LFADS.Utils.tmuxify_string( outputString, r.sessionNameTrain, 'keepSessionAlive', p.Results.keepSessionAlive);
             end
         end
+        
+        function python_str_out = python_str(r, parser)
+            if parser.Results.python_version == 3
+                python_str_out = 'python3';
+            else 
+                python_str_out = 'python2.7';
+            end
+        end
 
         function cmd = buildCommandLFADSPosteriorMeanSample(r, varargin)
             % Generates the command string for LFADS posterior mean sampling
@@ -1220,6 +1233,7 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             p.addParameter('keepSessionAlive', false, @islogical);
             p.addParameter('teeOutput', false, @islogical);
             p.addParameter('posterior_mean_kind', '', @ischar);
+            p.addParameter('python_version', 2, @isscalar);
             p.parse(varargin{:});
 
             posteriorMeanKind = p.Results.posterior_mean_kind;
@@ -1251,7 +1265,7 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                 params = rmfield(params, {'dataset_names', 'dataset_dims', 'temporal_spike_jitter_width'});
                 use_controller = boolean(params.ci_enc_dim);
 
-                execstr = 'python';
+                execstr = r.python_str(p);
                 if ~isempty(p.Results.inputParams)
                     inputParams = p.Results.inputParams;
                     % take the arguments passed, add new params, or overwrite existing ones
@@ -1286,8 +1300,9 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                 % use the RunParams to generate the params
                 paramsString = r.params.generateCommandLineOptionsString(r, 'omitFields', {'c_temporal_spike_jitter_width', 'c_batch_size'});
 
-                cmd = sprintf(['python %s --data_dir=%s --data_filename_stem=lfads ' ...
+                cmd = sprintf(['%s %s --data_dir=%s --data_filename_stem=lfads ' ...
                 '--lfads_save_dir=%s --kind=%s --batch_size=%d --checkpoint_pb_load_name=checkpoint_lve %s'], ...
+                r.python_str(p), ...
                 p.Results.path_run_lfads_py, ...
                 LFADS.Utils.GetFullPath(r.pathLFADSInput), LFADS.Utils.GetFullPath(r.pathLFADSOutput), ...
                 posteriorMeanKind, p.Results.num_samples_posterior, paramsString);
@@ -1317,6 +1332,7 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             p.addParameter('useTmuxSession', false, @islogical);
             p.addParameter('keepSessionAlive', false, @islogical);
             p.addParameter('teeOutput', false, @islogical);
+            p.addParameter('python_version', 2, @isscalar);
             p.parse(varargin{:});
 
             % Generates the command string for LFADS write model params
@@ -1330,8 +1346,9 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             % use the RunParams to generate the params
             paramsString = r.params.generateCommandLineOptionsString(r, 'omitFields', {'c_temporal_spike_jitter_width'});
 
-            cmd = sprintf(['python %s --data_dir=%s --data_filename_stem=lfads ' ...
+            cmd = sprintf(['%s %s --data_dir=%s --data_filename_stem=lfads ' ...
             '--lfads_save_dir=%s --kind=write_model_params --checkpoint_pb_load_name=checkpoint_lve %s'], ...
+                r.python_str(p), ...
                 p.Results.path_run_lfads_py, ...
                 LFADS.Utils.GetFullPath(r.pathLFADSInput), LFADS.Utils.GetFullPath(r.pathLFADSOutput), paramsString);
 
@@ -1383,6 +1400,7 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             p.addParameter('header', '#!/bin/bash', @ischar);
             p.addParameter('prependPathToRunLFADS', false, @islogical); % prepend an export path to run_lfads.py
             p.addParameter('virtualenv', '', @ischar); % prepend source activate environment name
+            p.addParameter('python_version', 2, @isscalar);
             p.KeepUnmatched = true;
             p.parse(varargin{:});
 
@@ -1448,6 +1466,7 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             p = inputParser();
             p.addParameter('path_run_lfads_py', '$(which run_lfads.py)', @ischar);
             p.addParameter('header', '#!/bin/bash', @ischar);
+            p.addParameter('python_version', 2, @isscalar);
             p.KeepUnmatched = true;
             p.parse(varargin{:});
 
@@ -1500,6 +1519,7 @@ classdef Run < handle & matlab.mixin.CustomDisplay
             p.addOptional('reload', false, @(x) isscalar(x) && islogical(x));
             p.addParameter('posterior_mean_kind', r.params.posterior_mean_kind, @ischar);
             p.addParameter('datasetIdx', [], @isvector);
+            p.addParameter('python_version', 2, @isscalar);
             p.parse(varargin{:});
 
             reload = p.Results.reload;

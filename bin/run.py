@@ -33,10 +33,5 @@ print(subprocess_env['PATH'])
 
 for task_spec in task_specs:
     print("Running task %s. spec=%s" % (task_spec['name'], task_spec))
-    outfile = open(task_spec['outfile'], 'w')
-    donefile = open(task_spec['outfile'], 'w')
-    s = subprocess.Popen(task_spec['command'].split(" "), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-        env=subprocess_env)
-    for line in s.stdout: # b'\n'-separated lines
-        sys.stdout.buffer.write(line) # pass bytes as is
-        outfile.write(line.decode('utf-8'))
+    s = subprocess.check_call(task_spec['command'].split(" "), env=subprocess_env)
+    print("Task %s finished with code %s" % (task_spec['name'], s))
