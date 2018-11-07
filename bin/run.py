@@ -14,8 +14,8 @@ if hostname == "pbotros.local":
     python_paths.append(os.path.expanduser("~/Development/models/research/lfads"))
     python_paths.append(os.path.expanduser("~/Development/lfads-run-manager/src"))
 elif hostname == "DESKTOP-EQ0F9DU":
-    python_paths.append("/z/ELZ/VS265/lfads-run-manager/src")
-    python_paths.append("/z/ELZ/VS265/models/research/src")
+    python_paths.append("Z:\\ELZ\\VS265\\lfads-run-manager\\src")
+    python_paths.append("Z:\\ELZ\\VS265\\models\\research\\src")
 else:
     print("Unknown hostname %s. Not doing import paths automatically." % hostname)
 
