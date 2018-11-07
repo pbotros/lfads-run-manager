@@ -40,9 +40,9 @@ subprocess_env['PATH'] = ':'.join(subprocess_env['PATH'].split(':') + sys.path)
 
 def correct_paths(content):
     if running_on_windows:
-        return content.replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', 'Z:\\ELZ\\VS265\\generated\\latest')
+        return content.replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', 'Z:\\\\ELZ\\\\VS265\\\\generated\\\\latest')
     else:
-        return content.replace('Z:\\ELZ\\VS265\\generated\\latest', '/Volumes/DATA_01/ELZ/VS265/generated/latest')
+        return content.replace('Z:\\\\ELZ\\\\VS265\\\\generated\\\\latest', '/Volumes/DATA_01/ELZ/VS265/generated/latest')
 
 
 for task_spec in task_specs:
