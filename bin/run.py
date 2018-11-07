@@ -42,7 +42,6 @@ for task_spec in task_specs:
     print("Running task %s. spec=%s" % (task_spec['name'], task_spec))
     command_split = task_spec['command'].split(" ")
     lfads_train_filename = command_split[1]
-    import pdb; pdb.set_trace()
     if running_on_windows:
         f = open(lfads_train_filename, 'r')
         replaced = f.read().replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', '/z/ELZ/VS265/generated/latest')
