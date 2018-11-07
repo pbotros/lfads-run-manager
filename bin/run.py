@@ -20,6 +20,8 @@ elif hostname == "DESKTOP-EQ0F9DU":
     running_on_windows = True
     python_paths.append("Z:\\ELZ\\VS265\\lfads-run-manager\\src")
     python_paths.append("Z:\\ELZ\\VS265\\models\\research\\src")
+    python_paths.append("/z/ELZ/VS265/lfads-run-manager/src")
+    python_paths.append("/z/ELZ/VS265/models/research/src")
 else:
     print("Unknown hostname %s. Not doing import paths automatically." % hostname)
     running_on_windows = False
