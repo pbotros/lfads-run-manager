@@ -30,7 +30,7 @@ sys.path += python_paths
 
 if running_on_windows:
     lfadsqueue_directory = 'Z:\\ELZ\\VS265\\generated\\latest'
-    lfadsqueue_directory = '/z/ELZ/VS265/generated/latest'
+    # lfadsqueue_directory = '/z/ELZ/VS265/generated/latest'
 else:
     lfadsqueue_directory = '/Volumes/DATA_01/ELZ/VS265/generated/latest'
 
