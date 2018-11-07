@@ -25,11 +25,11 @@ else:
 sys.path += python_paths
 
 if running_on_windows:
-    lfadsqueue_filename = '/z/ELZ/VS265/generated/latest/run_lfadsqueue.py'
+    lfadsqueue_directory = 'Z:\\ELZ\\VS265\\generated\\latest'
 else:
-    lfadsqueue_filename = '/Volumes/DATA_01/ELZ/VS265/generated/latest/run_lfadsqueue.py'
+    lfadsqueue_directory = '/Volumes/DATA_01/ELZ/VS265/generated/latest'
 
-sys.path.append(os.path.dirname(lfadsqueue_filename))
+sys.path.append(lfadsqueue_directory)
 
 from run_lfadsqueue import task_specs
 
