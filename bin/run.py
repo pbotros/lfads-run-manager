@@ -44,8 +44,13 @@ subprocess_env['PATH'] = ':'.join(subprocess_env['PATH'].split(':') + sys.path)
 
 def correct_paths(content):
     if running_on_windows:
-        for original in re.findall('/Volumes/DATA_01/ELZ/VS265/generated/latest/.*/lfads_train.sh', content):
+        while True:
+            matches = re.findall('/Volumes/DATA_01/ELZ/VS265/generated/latest/[A-Za-z0-9_-]*/lfads_train.sh', content)
+            if len(matches) == 0:
+                break
+            original = matches[0]
             replaced = ntpath.join('Z:\\', ntpath.normpath(original.replace('/Volumes/DATA_01/', '')))
+            print("Replacing %s to %s" % (original, replaced))
             content = content.replace(original, replaced).replace('\\', '\\\\\\')
     return content
 
