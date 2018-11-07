@@ -18,8 +18,8 @@ if hostname == "pbotros.local":
     python_paths.append(os.path.expanduser("~/Development/lfads-run-manager/src"))
 elif hostname == "DESKTOP-EQ0F9DU":
     running_on_windows = True
-    python_paths.append("Z:\\ELZ\\VS265\\lfads-run-manager\\src")
-    python_paths.append("Z:\\ELZ\\VS265\\models\\research\\src")
+    # python_paths.append("Z:\\ELZ\\VS265\\lfads-run-manager\\src")
+    # python_paths.append("Z:\\ELZ\\VS265\\models\\research\\src")
     python_paths.append("/z/ELZ/VS265/lfads-run-manager/src")
     python_paths.append("/z/ELZ/VS265/models/research/lfads")
 else:
@@ -30,6 +30,7 @@ sys.path += python_paths
 
 if running_on_windows:
     lfadsqueue_directory = 'Z:\\ELZ\\VS265\\generated\\latest'
+    lfadsqueue_directory = '/z/ELZ/VS265/generated/latest'
 else:
     lfadsqueue_directory = '/Volumes/DATA_01/ELZ/VS265/generated/latest'
 
