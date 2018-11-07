@@ -7,7 +7,7 @@ import sys
 hostname = socket.gethostname()
 
 # Remove anything with "Ching" and "models/research/lfads"
-sys.path = [p for p in sys.path if not ('Ching' in p and 'models/research/lfads' in p)]
+sys.path = [p for p in sys.path if not ('Ching' in p and 'lfads' in p)]
 
 python_paths = []
 if hostname == "pbotros.local":
