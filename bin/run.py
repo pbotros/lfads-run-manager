@@ -36,14 +36,13 @@ from run_lfadsqueue import task_specs
 subprocess_env = os.environ.copy()
 subprocess_env['PYTHONPATH'] = ':'.join(sys.path)
 subprocess_env['PATH'] = ':'.join(subprocess_env['PATH'].split(':') + sys.path)
-print(subprocess_env['PATH'])
 
 
 def correct_paths(content):
     if running_on_windows:
-        return content.replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', '/z/ELZ/VS265/generated/latest')
+        return content.replace('/Volumes/DATA_01/ELZ/VS265/generated/latest', 'Z:\\ELZ\\VS265\\generated\\latest')
     else:
-        return content.replace('/z/ELZ/VS265/generated/latest', '/Volumes/DATA_01/ELZ/VS265/generated/latest')
+        return content.replace('Z:\\ELZ\\VS265\\generated\\latest', '/Volumes/DATA_01/ELZ/VS265/generated/latest')
 
 
 for task_spec in task_specs:
