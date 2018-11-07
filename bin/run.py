@@ -58,5 +58,5 @@ for task_spec in task_specs:
     f.close()
 
     # Edit file on disk to normalize
-    s = subprocess.check_call(command_split, env=subprocess_env)
+    s = subprocess.check_call(['bash', lfads_train_filename], env=subprocess_env)
     print("Task %s finished with code %s" % (task_spec['name'], s))
