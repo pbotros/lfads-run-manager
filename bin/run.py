@@ -28,6 +28,7 @@ if len(sys.argv) != 2:
 file_name = sys.argv[1]
 sys.path.append(os.path.dirname(file_name))
 
+import pdb; pdb.set_trace()
 from run_lfadsqueue import task_specs
 
 subprocess_env = os.environ.copy()
