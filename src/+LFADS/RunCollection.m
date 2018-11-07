@@ -295,6 +295,7 @@ classdef RunCollection < handle & matlab.mixin.CustomDisplay & matlab.mixin.Copy
             p.addParameter('mode', 'all', @ischar);
 
             p.addParameter('posterior_mean_kind', '', @ischar); % for posterior mean sampling
+            p.addParameter('path_run_lfads_py', '$(which run_lfads.py)', @ischar);
             p.addParameter('python_version', 2, @isscalar);
             
             p.parse(varargin{:});
@@ -373,7 +374,8 @@ classdef RunCollection < handle & matlab.mixin.CustomDisplay & matlab.mixin.Copy
                         'prependPathToRunLFADS', p.Results.prependPathToRunLFADS, ...
                         'virtualenv', p.Results.virtualenv, ...
                         'posterior_mean_kind', p.Results.posterior_mean_kind, ...
-                        'python_version', p.Results.python_version);
+                        'python_version', p.Results.python_version, ...
+                        'path_run_lfads_py', p.Results.path_run_lfads_py);
                     cmdfile = LFADS.Utils.GetFullPath(rc.runs(iR).fileShellScriptLFADSTrain);
 
                 elseif strcmp(mode, 'posteriorMeanOnly')
@@ -384,7 +386,8 @@ classdef RunCollection < handle & matlab.mixin.CustomDisplay & matlab.mixin.Copy
                         'prependPathToRunLFADS', p.Results.prependPathToRunLFADS, ...
                         'virtualenv', p.Results.virtualenv, ...
                         'posterior_mean_kind', p.Results.posterior_mean_kind, ...
-                        'python_version', p.Results.python_version);
+                        'python_version', p.Results.python_version, ...
+                        'path_run_lfads_py', p.Results.path_run_lfads_py);
                     cmdfile = LFADS.Utils.GetFullPath(rc.runs(iR).fileShellScriptLFADSPosteriorMeanSample);
 
                 else

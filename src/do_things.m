@@ -27,4 +27,6 @@ rc.prepareForLFADS();
 
 % Write a python script that will train all of the LFADS runs using a
 % load-balancer against the available CPUs and GPUs
-rc.writeShellScriptRunQueue('display', 0, 'python_version', 3);
+rc.writeShellScriptRunQueue('display', 0, ...
+    'python_version', 3, ...
+    'path_run_lfads_py', '/Volumes/DATA_01/ELZ/VS265/models/research/lfads/run_lfads.py');
