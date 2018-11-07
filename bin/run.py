@@ -45,7 +45,7 @@ subprocess_env['PATH'] = ':'.join(subprocess_env['PATH'].split(':') + sys.path)
 def correct_paths(content):
     if running_on_windows:
         while True:
-            matches = re.findall(r'/Volumes/DATA_01/ELZ/VS265/generated/latest/[A-Za-z0-9/_-]*?/lfads_train.sh', content)
+            matches = re.findall(r'/Volumes/DATA_01/ELZ/VS265/generated/latest/[A-Za-z0-9/_.-]*', content)
             if len(matches) == 0:
                 break
             original = matches[0]
@@ -62,7 +62,6 @@ for task_spec in task_specs:
 
     f = open(lfads_train_filename, 'r')
     read = f.read()
-    import pdb; pdb.set_trace()
     replaced = correct_paths(read)
     f.close()
     f = open(lfads_train_filename, 'w')
