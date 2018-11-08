@@ -8,7 +8,7 @@ import sys
 
 hostname = socket.gethostname()
 
-# Remove anything with "Ching" and "models/research/lfads"
+# Remove anything with "Ching" and "lfads"
 sys.path = [p for p in sys.path if not ('Ching' in p and 'lfads' in p)]
 
 python_paths = []

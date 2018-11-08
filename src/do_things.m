@@ -5,7 +5,7 @@ dc.loadInfo; % loads dataset metadata
 
 % Run a single model for each dataset, and one stitched run with all datasets
 runRoot = '/Volumes/DATA_01/ELZ/VS265/generated';
-rc = BmiExperiment.RunCollection(runRoot, 'latest', dc);
+rc = BmiExperiment.RunCollection(runRoot, datestr(now, 'YYYYmmdd-HHMMSS'), dc);
 
 % Setup hyperparameters, 4 sets with number of factors swept through 2,4,6,8
 par = BmiExperiment.RunParams;
