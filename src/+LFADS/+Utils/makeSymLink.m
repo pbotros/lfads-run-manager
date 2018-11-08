@@ -12,7 +12,8 @@ function success = makeSymLink(src, link, expandSource)
     link = LFADS.Utils.GetFullPath(link);
     LFADS.Utils.mkdirRecursive(fileparts(link));
 
-    cmd = sprintf('ln -sfn "%s" "%s"', src, link);
+    cmd = sprintf('mv -f "%s" "%s"', src, link);
+    % cmd = sprintf('ln -sfn "%s" "%s"', src, link);
     [status, output] = unix(cmd);
     
     if status

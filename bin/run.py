@@ -6,32 +6,37 @@ import socket
 import subprocess
 import sys
 
+if len(sys.argv) != 2:
+    print("Usage: %s <generated_dataset_name>" % sys.argv[0])
+    sys.exit(1)
+
+generated_dataset_name = sys.argv[1]
+
 hostname = socket.gethostname()
 
 # Remove anything with "Ching" and "lfads"
 sys.path = [p for p in sys.path if not ('Ching' in p and 'lfads' in p)]
 
 python_paths = []
-if hostname == "pbotros.local":
-    running_on_windows = False
-    python_paths.append(os.path.expanduser("~/Development/models/research/lfads"))
-    python_paths.append(os.path.expanduser("~/Development/lfads-run-manager/src"))
-elif hostname == "DESKTOP-EQ0F9DU":
+if hostname == "DESKTOP-EQ0F9DU":
     running_on_windows = True
     python_paths.append("Z:\\ELZ\\VS265\\lfads-run-manager\\src")
     python_paths.append("Z:\\ELZ\\VS265\\models\\research\\src")
-    # python_paths.append("/z/ELZ/VS265/lfads-run-manager/src")
-    # python_paths.append("/z/ELZ/VS265/models/research/lfads")
 else:
-    print("Unknown hostname %s. Not doing import paths automatically." % hostname)
     running_on_windows = False
+    python_paths.append(os.path.expanduser("~/Development/models/research/lfads"))
+    python_paths.append(os.path.expanduser("~/Development/lfads-run-manager/src"))
 
 sys.path += python_paths
 
 if running_on_windows:
-    lfadsqueue_directory = 'Z:\\ELZ\\VS265\\generated\\latest'
+    lfadsqueue_directory = 'Z:\\ELZ\\VS265\\generated\\%s' % generated_dataset_name
 else:
-    lfadsqueue_directory = '/Volumes/DATA_01/ELZ/VS265/generated/latest'
+    lfadsqueue_directory = '/Volumes/DATA_01/ELZ/VS265/generated/%s' % generated_dataset_name
+
+if not os.path.exists(lfadsqueue_directory):
+    print("Given directory %s does not exist." % lfadsqueue_directory)
+    sys.exit(2)
 
 sys.path.append(lfadsqueue_directory)
 
@@ -63,7 +68,7 @@ def correct_paths_research(content):
 
 def correct_paths_generated(content):
     while True:
-        matches = re.findall(r'/Volumes/DATA_01/ELZ/VS265/generated/latest/[A-Za-z0-9/_.-]*', content)
+        matches = re.findall(r'/Volumes/DATA_01/ELZ/VS265/generated/%s/[A-Za-z0-9/_.-]*' % generated_dataset_name, content)
         if len(matches) == 0:
             break
         original = matches[0]

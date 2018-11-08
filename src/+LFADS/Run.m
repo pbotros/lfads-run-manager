@@ -1012,7 +1012,8 @@ classdef Run < handle & matlab.mixin.CustomDisplay
 
                 linkName = fullfile(r.pathLFADSInput, fnames{iDS});
                 if ~exist(linkName, 'file') || regenerate
-                    LFADS.Utils.makeSymLink(origName, linkName, false);
+                    existing_file = LFADS.Utils.GetFullPath(fullfile(linkName, '..', origName));
+                    LFADS.Utils.mv(existing_file, linkName);
                 end
 
                 % make link relative
@@ -1025,7 +1026,8 @@ classdef Run < handle & matlab.mixin.CustomDisplay
                 end
                 linkName = fullfile(r.pathLFADSInput, fnamesInputInfo{iDS});
                 if ~exist(linkName, 'file') || regenerate
-                    LFADS.Utils.makeSymLink(origName, linkName, false);
+                    existing_file = LFADS.Utils.GetFullPath(fullfile(linkName, '..', origName));
+                    LFADS.Utils.mv(existing_file, linkName);
                 end
             end
 
