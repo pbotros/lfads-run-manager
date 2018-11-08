@@ -89,7 +89,7 @@ for task_spec in task_specs:
     if running_on_windows:
         CREATE_NEW_PROCESS_GROUP = 0x00000200
         DETACHED_PROCESS = 0x00000008
-        s = subprocess.check_call('bash ' + lfads_train_filename, shell=True, env=subprocess_env,
+        s = subprocess.check_call('bash ' + lfads_train_filename + ' &', shell=True, env=subprocess_env,
             creationflags=DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP)
     else:
         s = subprocess.check_call('bash ' + lfads_train_filename + ' &', shell=True, env=subprocess_env)
