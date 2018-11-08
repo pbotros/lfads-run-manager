@@ -86,11 +86,14 @@ for task_spec in task_specs:
     f.write(replaced)
     f.close()
 
-    if running_on_windows:
-        CREATE_NEW_PROCESS_GROUP = 0x00000200
-        DETACHED_PROCESS = 0x00000008
-        s = subprocess.check_call('bash ' + lfads_train_filename + ' &', shell=True, env=subprocess_env,
-            creationflags=DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP)
-    else:
-        s = subprocess.check_call('bash ' + lfads_train_filename + ' &', shell=True, env=subprocess_env)
-    print("Task %s finished with code %s" % (task_spec['name'], s))
+    os.environ['PATH'] = subprocess_env['PATH']
+    os.environ['PYTHONPATH'] = subprocess_env['PYTHONPATH']
+    os.system('bash ' + lfads_train_filename + ' &')
+    # if running_on_windows:
+    #     CREATE_NEW_PROCESS_GROUP = 0x00000200
+    #     DETACHED_PROCESS = 0x00000008
+    #     s = subprocess.check_call('bash ' + lfads_train_filename + ' &', shell=True, env=subprocess_env,
+    #         creationflags=DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP)
+    # else:
+    #     s = subprocess.check_call('bash ' + lfads_train_filename + ' &', shell=True, env=subprocess_env)
+    # print("Task %s finished with code %s" % (task_spec['name'], s))
