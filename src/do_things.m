@@ -23,7 +23,7 @@ runName = dc.datasets(1).getSingleRunName(); % == 'single_dataset001'
 rc.addRunSpec(BmiExperiment.RunSpec(runName, dc, 1));
 
 % Generate files needed for LFADS input on disk
-rc.prepareForLFADS();
+rc.prepareForLFADS(true);
 
 % Write a python script that will train all of the LFADS runs using a
 % load-balancer against the available CPUs and GPUs
