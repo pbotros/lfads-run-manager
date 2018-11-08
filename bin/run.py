@@ -77,19 +77,25 @@ def correct_paths_generated(content):
         content = content.replace(original, replaced)
     return content
 
+def correct_paths_for_file(filename):
+    f = open(filename, 'r')
+    read = f.read()
+    replaced = correct_paths(read)
+    f.close()
+    f = open(filename, 'w')
+    f.write(replaced)
+    f.close()
+
+
+# Fix the launch_tensorboard.sh script
+correct_paths_for_file(os.path.join(lfadsqueue_directory, 'launch_tensorboard.sh'))
 
 for task_spec in task_specs:
     print("Running task %s. spec=%s" % (task_spec['name'], task_spec))
     command_split = task_spec['command'].split(" ")
     lfads_train_filename = correct_paths(command_split[1])
 
-    f = open(lfads_train_filename, 'r')
-    read = f.read()
-    replaced = correct_paths(read)
-    f.close()
-    f = open(lfads_train_filename, 'w')
-    f.write(replaced)
-    f.close()
+    correct_paths_for_file(lfads_train_filename)
 
     s = subprocess.check_call('bash ' + lfads_train_filename, shell=True, env=subprocess_env)
     print("Task %s finished with code %s" % (task_spec['name'], s))
