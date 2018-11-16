@@ -43,19 +43,20 @@ classdef Run < LFADS.Run
 
             data = dataset.loadData();
 
-            trialTimeBinCounts = [];
+            trialIdxsToUse = [];
             for i = 1:size(data, 1)
                 timeBinCount = size(data{i}, 1);
-                trialTimeBinCounts(size(trialTimeBinCounts, 2) + 1) = timeBinCount;
+                if timeBinCount >= 10
+                    trialIdxsToUse(size(trialIdxsToUse, 2) + 1) = i;
+                end
             end
-            minTimeBinCounts = min(trialTimeBinCounts);
-            nTrials = size(data, 1);
-            nTime = minTimeBinCounts;
+            nTrials = size(trialIdxsToUse, 2);
+            nTime = 10;
             nChannels = size(data{1}, 2);
 
             spikes = zeros(nTrials, nChannels, nTime, 1);
             
-            for trialIdx = 1:nTrials
+            for trialIdx = trialIdxsToUse
                 for channelIdx = 1:nChannels
                     for timeIdx = 1:nTime
                         trial_data = data{trialIdx};
