@@ -10,7 +10,21 @@ classdef Dataset < LFADS.Dataset
 
         function data = loadData(ds)
             all_data = load(ds.path);
-            raw_data = all_data.PacoBMI.(ds.dayIndex).rearranged_neuraldata.direct;
+            raw_data_direct = all_data.PacoBMI.(ds.dayIndex).rearranged_neuraldata.direct;
+            raw_data_indirect_near = all_data.PacoBMI.(ds.dayIndex).rearranged_neuraldata.indirect_ipsi_near; 
+            raw_data_indirect_far = all_data.PacoBMI.(ds.dayIndex).rearranged_neuraldata.indirect_ipsi_far; 
+            
+            indirect_near_mat = vertcat(raw_data_indirect_near {1:end});
+            indirect_near_ind = find(~any(isnan(indirect_near_mat),1)); 
+            indirect_far_mat = vertcat(raw_data_indirect_far {1:end});
+            indirect_far_ind = find(~any(isnan(indirect_far_mat),1)); 
+            
+            raw_data = cell(size(raw_data_direct)); 
+            for t = 1:size(raw_data,1); 
+                raw_data{t} = [raw_data_direct{t}, ...
+                    raw_data_indirect_near{t}(:,indirect_near_ind), ...
+                    raw_data_indirect_far{t}(:,indirect_far_ind)]; 
+            end
 
             trialIdxsToUse = [];
             for i = 1:size(raw_data , 1)
