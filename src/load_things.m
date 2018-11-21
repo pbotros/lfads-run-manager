@@ -87,7 +87,7 @@ channel_to_plot = 12;
 
 figure;
 ax1 = subplot(2, 1, 1);
-title(ax1, sprintf('Single Trial, Channel %d, Real', channel_to_plot));
+title(ax1, sprintf('Single Trial, Target %d, Channel %d, Real', chosen_target, channel_to_plot));
 hold on;
 % plot the real data first for this trial:
 for trial_idx = 1:size(spikes_for_trials_for_target, 1)
@@ -107,7 +107,7 @@ means = run.loadPosteriorMeans();
 inferred_rates_for_trials_for_target = permute(means.rates(:, :, trials_for_target), [3, 1, 2]);
 
 ax2 = subplot(2, 1, 2);
-title(ax2, sprintf('Single Trial, Channel %d, LFADS', channel_to_plot));
+title(ax2, sprintf('Single Trial, Target %d, Channel %d, LFADS',chosen_target, channel_to_plot));
 hold on;
 for trial_idx = 1:size(inferred_rates_for_trials_for_target, 1)
     s = squeeze(inferred_rates_for_trials_for_target(trial_idx, channel_to_plot, :));
