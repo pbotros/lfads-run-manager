@@ -26,20 +26,22 @@ classdef Dataset < LFADS.Dataset
             spikes = zeros(nTrials, nChannels, nTime, 1);
             targets = zeros(nTrials, 1);
             
+            spike_trial_idx = 1;
             for trialIdx = trialIdxsToUse
                 targets(trialIdx) = all_data.PacoBMI.(ds.dayIndex).targets(trialIdx);
                 for channelIdx = 1:nChannels
                     for timeIdx = 1:nTime
                         trial_data = raw_data{trialIdx};
-                        spikes(trialIdx, channelIdx, timeIdx) = trial_data(timeIdx, channelIdx);
-                        
+                        spikes(spike_trial_idx, channelIdx, timeIdx) = trial_data(timeIdx, channelIdx);
                     end
                 end
+                spike_trial_idx = spike_trial_idx + 1;
             end
             
             data = struct;
             data.spikes = spikes;
             data.targets = targets;
+            data.trialIdxs = trialIdxsToUse;
         end
 
         function loadInfo(ds, reload)
