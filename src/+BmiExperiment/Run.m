@@ -42,35 +42,15 @@ classdef Run < LFADS.Run
             %   vector of unique integers.
 
             data = dataset.loadData();
+            spikes = data.spikes;
 
-            trialIdxsToUse = [];
-            for i = 1:size(data, 1)
-                timeBinCount = size(data{i}, 1);
-                if timeBinCount >= 10
-                    trialIdxsToUse(size(trialIdxsToUse, 2) + 1) = i;
-                end
-            end
-            nTrials = size(trialIdxsToUse, 2);
-            nTime = 10;
-            nChannels = size(data{1}, 2);
-
-            spikes = zeros(nTrials, nChannels, nTime, 1);
-            
-            for trialIdx = trialIdxsToUse
-                for channelIdx = 1:nChannels
-                    for timeIdx = 1:nTime
-                        trial_data = data{trialIdx};
-                        spikes(trialIdx, channelIdx, timeIdx) = trial_data(timeIdx, channelIdx);
-                    end
-                end
-            end
             % leave separated by target, hardcode a target
             out.counts = spikes;
             out.timeVecMs = 100 * ((1:size(out.counts, 3)));
             % TODO: make the last time bin the appropriate time
-            
-            % Not using any conditions for now
-            out.conditionId = [];
+
+            % targets: nTrials x 1
+            out.conditionId = data.targets;
 
             % Not ground truth
             out.truth = [];
