@@ -28,7 +28,7 @@ classdef Dataset < LFADS.Dataset
             
             spike_trial_idx = 1;
             for trialIdx = trialIdxsToUse
-                targets(trialIdx) = all_data.PacoBMI.(ds.dayIndex).targets(trialIdx);
+                targets(spike_trial_idx) = all_data.PacoBMI.(ds.dayIndex).targets(trialIdx);
                 for channelIdx = 1:nChannels
                     for timeIdx = 1:nTime
                         trial_data = raw_data{trialIdx};
