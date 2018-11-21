@@ -82,7 +82,7 @@ chosen_target = all_targets(chosen_target_idx);
 
 % Look at trials for the chosen target
 trials_for_target = find(loaded_data.targets == chosen_target);
- spikes_for_trials_for_target = spikes(trials_for_target, :, :);
+spikes_for_trials_for_target = spikes(trials_for_target, :, :);
 channel_to_plot = 12;
 
 figure;
