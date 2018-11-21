@@ -65,10 +65,11 @@ hold off;
 
 % Find the target with the most trials
 all_targets = sort(unique(loaded_data.targets));
+all_targets = all_targets(all_targets ~= 0);
 num_trials_per_target = [];
 for target_idx = 1:size(all_targets, 1)
     target = all_targets(target_idx);
-    % ignore any results for target "0"
+    
     if target ~= 0
         num_trials_per_target(target_idx) = nnz(loaded_data.targets == target);
     else
@@ -85,35 +86,33 @@ spikes_for_trials_for_target = spikes(trials_for_target, :, :);
 channel_to_plot = 12;
 
 figure;
+ax1 = subplot(2, 1, 1);
+title(ax1, sprintf('Single Trial, Channel %d, Real', channel_to_plot));
 hold on;
-
 % plot the real data first for this trial:
 for trial_idx = 1:size(spikes_for_trials_for_target, 1)
-    plot(squeeze(spikes_for_trials_for_target(trial_idx, channel_to_plot, :)));
+    s = squeeze(spikes_for_trials_for_target(trial_idx, channel_to_plot, :));
+    interp_t = linspace(1, size(s, 1), size(s, 1)*3);
+    ss = spline(1:size(s, 1), s, interp_t);
+    plot(ax1, interp_t, ss);
 end
 
-for run_idx = 1:num_runs
-    run = rc.runs(run_idx);
-    means = run.loadPosteriorMeans();
-    
-    % inferred_rates: nTrials x nChannels x nTime
-    inferred_rates = permute(means.rates, [3, 1, 2]);
-    
-    % inferred_rates_joined: nChannels x (nTime * nTrials)
-    inferred_rates_joined = reshape(permute(inferred_rates, [2, 3, 1]), nChannels, []);
-    
-    num_factors = run.params.c_factors_dim;
-    % factors: num_factors x nTime x nTrials
-    factors = means.factors;
-    factors_joined = reshape(factors, num_factors, []);
+% and then plot inferred data for one of the runs overlaid
+% try with 2 factors
+run_idx = 1;
+run = rc.runs(run_idx);
+means = run.loadPosteriorMeans();
 
-    ax1 = subplot(3, num_runs, run_idx);
-    imagesc(ax1, inferred_rates_joined);
-    title(ax1, sprintf('%d Factors: Inferred Rates', num_factors));
-    
-    ax2 = subplot(3, num_runs, run_idx + num_runs);
-    imagesc(ax2, factors_joined);
-    title(ax2, sprintf('%d Factors: Factors', num_factors));
+% inferred_rates: nTrials x nChannels x nTime
+inferred_rates_for_trials_for_target = permute(means.rates(:, :, trials_for_target), [3, 1, 2]);
+
+ax2 = subplot(2, 1, 2);
+title(ax2, sprintf('Single Trial, Channel %d, LFADS', channel_to_plot));
+hold on;
+for trial_idx = 1:size(inferred_rates_for_trials_for_target, 1)
+    s = squeeze(inferred_rates_for_trials_for_target(trial_idx, channel_to_plot, :));
+    interp_t = linspace(1, size(s, 1), size(s, 1)*3);
+    ss = spline(1:size(s, 1), s, interp_t);
+    plot(ax2, interp_t, ss);
 end
-
-% plot the factors data 
+hold off;
