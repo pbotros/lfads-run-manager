@@ -24,7 +24,7 @@ function [decoder] = build_decoder(inputs, trialIdxs)
     load('/Volumes/DATA_01/ELZ/VS265/Paco_velocities.mat', 'velocity_cell');
 
     real_cursor_velocities = [];
-    for trialIdx = 1:size(velocity_cell{18}, 1)
+    for trialIdx = 1:size(velocity_cell{18}, 1) % 18 = day 18 
         if ismember(trialIdx, trialIdxs)
 
             velocity_datum = velocity_cell{18}{trialIdx}(1:10, :);

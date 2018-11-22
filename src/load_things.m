@@ -42,7 +42,7 @@ for run_idx = 1:num_runs
     inferred_rates = permute(means.rates, [3, 1, 2]);
     
     % inferred_rates_joined: nChannels x (nTime * nTrials)
-    inferred_rates_joined = reshape(permute(inferred_rates, [2, 3, 1]), nChannels, []);
+    inferred_rates_joined = reshape(means.rates, nChannels, []);
     
     num_factors = run.params.c_factors_dim;
     % factors: num_factors x nTime x nTrials
