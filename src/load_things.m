@@ -25,7 +25,7 @@ loaded_data = ds.loadData();
 
 % spikes: nTrials x nChannels x nTime
 spikes = loaded_data.spikes;
-nChannels = 15;
+nChannels = size(spikes, 2);
 
 % spike_rates_joined: nChannels x (nTime * nTrials)
 spike_rates_joined = reshape(permute(spikes, [2, 3, 1]), nChannels, []);
@@ -116,3 +116,6 @@ for trial_idx = 1:size(inferred_rates_for_trials_for_target, 1)
     plot(ax2, interp_t, ss);
 end
 hold off;
+
+decoder = build_decoder(loaded_data.spikes, loaded_data.trialIdxs);
+disp(decoder);
