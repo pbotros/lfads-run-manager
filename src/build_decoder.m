@@ -82,9 +82,9 @@ function [decoder] = build_decoder(inputs, trialIdxs)
     % figure; histogram(err);
     figure;
     hold on;
-    histogram(decoder.err);
-    histogram(vecnorm(decoder.real_outputs, 2, 2));
-    legend('Regression Error', 'L2 Norm of Real Velocities');
+    histogram(vecnorm(decoder.err, 2, 2), 100);
+    histogram(vecnorm(decoder.real_outputs, 2, 2), 100);
+    legend('L2 Norm of Residuals', 'L2 Norm of Real Velocities');
     legend;
     hold off;
 end
