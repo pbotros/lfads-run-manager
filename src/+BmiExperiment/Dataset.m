@@ -60,6 +60,7 @@ classdef Dataset < LFADS.Dataset
             end
             
             data = struct;
+            data.raw_data = raw_data;
             data.spikes = spikes;
             data.targets = targets;
             data.trialIdxs = trialIdxsToUse;
