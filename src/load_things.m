@@ -117,5 +117,5 @@ for trial_idx = 1:size(inferred_rates_for_trials_for_target, 1)
 end
 hold off;
 
-decoder = build_decoder(loaded_data.spikes);
+decoder = build_decoder(loaded_data.raw_data, struct);
 disp(decoder);

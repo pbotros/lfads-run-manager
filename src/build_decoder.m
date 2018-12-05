@@ -1,6 +1,12 @@
-function [decoder] = build_decoder(inputs)
+function [decoder] = build_decoder(inputs, input_params)
 % === INPUT PARAMETERS
 % inputs: should be a cell array of size nTrials, with each cell nTimeBins x nInputs.
+% input_params.skip_plots = 0 or 1, whether plots should be skipped
+% input_params.velocity_delay: number of time steps to lag the velocity
+% calculation from the spikes
+% input_params.gaussian_window, number of time steps to use as a gaussian
+%                               window for smoothing
+% input_params.moving_average, number of time steps for a moving average
 %
 % === OUTPUT PARAMETERS
 % decoder: decoder struct containing fit parameters and data used to fit.
@@ -26,8 +32,24 @@ function [decoder] = build_decoder(inputs)
     % The number of time bins that the velocity lags the spike rates. e.g.
     % a value of 1 means that the spikes during time t correspond to
     % velocity at time (t+1).
-    velocity_delay = 2;
+    if isfield(input_params, 'velocity_delay')
+        velocity_delay = input_params.velocity_delay;
+    else
+        velocity_delay = 1;
+    end
     day = 18;
+    
+    if isfield(input_params, 'gaussian_window')
+        w = gausswin(input_params.gaussian_window);
+        w = w/sum(w);
+        filter_func = @(x) filter(w, 1, x);
+    elseif isfield(input_params, 'moving_average')
+        w = (1/input_params.moving_average)*ones(input_params.moving_average,1);
+        filter_func = @(x) filter(w, 1, x);
+    else
+        filter_func = @(x) x;
+    end
+    
     for trialIdx = 1:size(velocity_cell{day}, 1) % 18 = day 18
         if size(velocity_cell{day}{trialIdx}, 1) < (NUM_TIME_LAGS+velocity_delay)
             continue
@@ -50,6 +72,7 @@ function [decoder] = build_decoder(inputs)
         % Append a copy of each trial's data, but time shifted appropriately
         for start_idx = 1:1:NUM_TIME_LAGS
             shifted = trial_inputs(start_idx:1:(start_idx + num_time_bins - 1), :);
+            shifted = filter_func(shifted);
             trial_inputs_with_lag = [trial_inputs_with_lag shifted];
         end
         inputs_flattened = [inputs_flattened; trial_inputs_with_lag];
@@ -75,8 +98,8 @@ function [decoder] = build_decoder(inputs)
     Ab = (inputs_flattened' * inputs_flattened) \ inputs_flattened' * real_cursor_velocities;
     decoder.b = Ab(1, :);
     decoder.A = Ab(2:end, :);
+    decoder.reconstructed = inputs_flattened * Ab;
     decoder.err = real_cursor_velocities - (inputs_flattened * Ab);
-
 
 %     ATTEMPT 2: mvregress as independently as possible
 %
@@ -126,21 +149,23 @@ function [decoder] = build_decoder(inputs)
     decoder.inputs = inputs_flattened;
     decoder.real_outputs = real_cursor_velocities;
 
-    relative_err = abs(decoder.err ./ decoder.real_outputs);
+    if ~isfield(input_params, 'skip_plots') || input_params.skip_plots == 0
+        relative_err = abs(decoder.err ./ decoder.real_outputs);
+        figure;
+        ax1 = subplot(2, 1, 1);
+        histogram(ax1, log10(relative_err(:, 1)), 100);
+        title(title_str);
+        set(ax1, 'YScale', 'log');
+        legend('X: Relative Error (log10)');
 
-    figure;
-    ax1 = subplot(2, 1, 1);
-    histogram(ax1, log10(relative_err(:, 1)), 100);
-    title(title_str);
-    set(ax1, 'YScale', 'log');
-    legend('X: Relative Error (log10)');
-
-    ax2 = subplot(2, 1, 2);
-    histogram(ax2, log10(relative_err(:, 2)), 100);
-    title(title_str);
-    set(ax2, 'YScale', 'log');
-    legend('Y: Relative Error (log10)');
-    legend;
-    hold off;
+        ax2 = subplot(2, 1, 2);
+        histogram(ax2, log10(relative_err(:, 2)), 100);
+        title(title_str);
+        set(ax2, 'YScale', 'log');
+        legend('Y: Relative Error (log10)');
+        legend;
+        hold off;
+    end
+    
 end
 
