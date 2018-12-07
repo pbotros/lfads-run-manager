@@ -1,4 +1,6 @@
 function [decoder] = build_decoder(inputs)
+% DOESN'T WORK
+%
 % === INPUT PARAMETERS
 % inputs: should be a cell array of size nTrials, with each cell nTimeBins x nInputs.
 %
