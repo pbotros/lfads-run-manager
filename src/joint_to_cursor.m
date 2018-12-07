@@ -11,34 +11,25 @@ function [cursor_pos_x, cursor_pos_y, cursor_vel_x, cursor_vel_y] = joint_to_cur
     angular_velocity_gain = 0.5;
     angular_velocity_gain = angle_GAIN/angular_velocity_gain; %*2;
 
-    % 2009 Feb 28, see calibration.m
-    L1 = 0.1818; % shoulder to elbow
-    L2 = .2470; %forearm legnth
-    L2ptr = 0.0237;
-    sho_pos_x = .0283;
-    sho_pos_y = -.1502;
-
+    % Make sure to use the calibration data from Paco Right Hand, not calibration.m
+    L1 = .10750; % shoulder to elbow
+    L2 = .23685; %forearm legnth
+    L2ptr = -.01198;
+    sho_pos_x = .02502;
+    sho_pos_y = -.13435;
     Offset_angle = 4/angle_GAIN; %Offset_angle = 2; %?? 4/2.5=1.6 rad or -91.67 degree offset per simulink 'External DAQ'
 
-    THETAs = theta_s/angle_GAIN; 
-    THETAs = [THETAs * (5000/2048)]/1000+Offset_angle;
-    THETAe = theta_e/angle_GAIN; 
-    THETAe = [THETAe * (5000/2048)]/1000+Offset_angle;
-
-    THETApointer=pi/2;
-    L1ang=THETAs;
-    L2ang=THETAs+THETAe;
-    L2_ptr_angle=THETAs+THETAe+THETApointer;
-    epx=sho_pos_x +L1*cos(L1ang);
-    epy=sho_pos_y +L1*sin(L1ang);
-    cursor_pos_x = epx+L2*cos(L2ang);
-    cursor_pos_y = epy+L2*sin(L2ang);
+    THETAs = theta_s/angle_GAIN+Offset_angle; % in rads; link 1;
+    THETAe = theta_e/angle_GAIN+Offset_angle;
+    [elb_pos_x, elb_pos_y] = pol2cart(THETAs, L1);
+    [hand_pos_x, hand_pos_y] = pol2cart(THETAe+THETAs, L2);
+    [pointer_x, pointer_y] = pol2cart(THETAe+THETAs+pi/2,L2ptr);
+    
+    cursor_pos_x = hand_pos_x + elb_pos_x + pointer_x + sho_pos_x;
+    cursor_pos_y = hand_pos_y + elb_pos_y + pointer_y + sho_pos_y;
 
     THETAs_velocity = omega_s/angle_GAIN*angular_velocity_gain;
-    THETAs_velocity = [THETAs_velocity * (5000/2048)]/1000;
     THETAe_velocity = omega_e/angle_GAIN*angular_velocity_gain;
-    THETAe_velocity = [THETAe_velocity * (5000/2048)]/1000;
-
     J11 = -L1*sin(THETAs)-L2*sin(THETAe+THETAs)-L2ptr*sin(THETAe+THETAs+pi/2);
     J12 = -L2*sin(THETAe+THETAs) - L2ptr*sin(THETAe+THETAs+pi/2);
     J21 = L1*cos(THETAs)+L2*cos(THETAe+THETAs)+ L2ptr*cos(THETAe+THETAs+pi/2);

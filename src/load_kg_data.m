@@ -9,7 +9,6 @@ function s = load_kg_data()
     % instead
     p ='~/Desktop/KG_MAT/BMI_model_data/';
     a='Paco_prediction_15-Jul-2008_1.mat';
-    %a='Paco_prediction_11-Feb-2008_1.mat'
     load([p a]);
     N=sort(N);
     N_FIXED=N;
@@ -24,9 +23,9 @@ function s = load_kg_data()
 
     %training
     lags=10;
-    n_points_train = 5500 + 10; %6010; %10 min of data at 10hz + 1sec for the lags
+    n_points_train = 6000 + 10; %6010; %10 min of data at 10hz + 1sec for the lags
     train=lags:n_points_train-1;
-    test_length = 500; %i.e. number/100 give seconds of prediction
+    test_length = size(spike_times, 1) - n_points_train; %i.e. number/100 give seconds of prediction
     test=length(train)+1:length(train)+1+test_length;
 
     %this is Y in the lin-pred actual data; data (shoulder pos,e pos, s vel, e vel)
@@ -39,7 +38,7 @@ function s = load_kg_data()
     s.lags = lags;
     % channels_used reference the channel indices that were used to compute
     % this linear fit.
-    s.channels_used = N_index;
+    s.channels_used = neurons_used;
     % This is the "A" matrix. Size 4 x (lags * length(channels_used)). This
     % transforms spikes into joint angles.
     % The four rows, in order, are:
