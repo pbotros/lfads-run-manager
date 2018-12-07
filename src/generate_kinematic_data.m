@@ -12,6 +12,8 @@ function kinematic_data = generate_kinematic_data()
     %
     % Returns kinematic_data, a struct with first-level properties of
     % Day01, Day02, etc.
+    % It has first-level properties `model` which gives the matrices used
+    % to generate this data.
     % Within those, are predicted_joint_params and predicted_cursor_params,
     % each <num_trialsx1> cells. The joint params are [elbow angular
     % position (rad), shoulder angular position (rad), elbow angular
@@ -22,8 +24,12 @@ function kinematic_data = generate_kinematic_data()
     s = load_kg_data();
 
     load('/Volumes/DATA_01/ELZ/VS265/PacoBMI_days.mat', 'PacoBMI');
-    lags = 10;
+    lags = s.lags;
     kinematic_data = struct;
+    kinematic_data.model = struct;
+    kinematic_data.model.ahat = s.ahat;
+    kinematic_data.model.mu = s.mu;
+    kinematic_data.model.lags = s.lags;
     for day_idx = 1:18
         day_str = sprintf('Day%02d', day_idx);
         num_trials = size(PacoBMI.(day_str).neuraldata.direct, 1);
