@@ -1,18 +1,30 @@
 classdef Dataset < LFADS.Dataset
     properties
         dayIndex = 0
+        shuffle = 0
+        unit_type = 'direct'
     end
     methods
-        function ds = Dataset(collection, relPath, dayIndex)
+        function ds = Dataset(collection, relPath, dayIndex, params)
             ds = ds@LFADS.Dataset(collection, relPath);
             ds.dayIndex = dayIndex;
+            if isfield(params, 'shuffle')
+                ds.shuffle = 1;
+            else
+                ds.shuffle = 0;
+            end
+            if isfield(params, 'unit_type')
+                ds.unit_type = params.unit_type;
+            else
+                ds.unit_type = 'direct';
+            end
         end
 
         function data = loadData(ds)
             all_data = load(ds.path);
-            unit_type = 'direct'; 
+
             raw_data_direct = all_data.PacoBMI.(ds.dayIndex).rearranged_neuraldata.direct;
-            if strcmp(unit_type, 'all')==1
+            if strcmp(ds.unit_type, 'all')==1
                 raw_data_indirect_near = all_data.PacoBMI.(ds.dayIndex).rearranged_neuraldata.indirect_ipsi_near; 
                 raw_data_indirect_far = all_data.PacoBMI.(ds.dayIndex).rearranged_neuraldata.indirect_ipsi_far; 
             
@@ -27,7 +39,7 @@ classdef Dataset < LFADS.Dataset
                         raw_data_indirect_near{t}(:,indirect_near_ind), ...
                         raw_data_indirect_far{t}(:,indirect_far_ind)]; 
                 end
-            elseif strcmp(unit_type, 'direct')==1
+            elseif strcmp(ds.unit_type, 'direct')==1
                 raw_data = raw_data_direct; 
             else 
                 error('Unit type not recognized. Use "direct" or "all"')
@@ -49,13 +61,23 @@ classdef Dataset < LFADS.Dataset
             
             spike_trial_idx = 1;
             for trialIdx = trialIdxsToUse
+                % For each trial, generate a shuffle vector
+                if ds.shuffle == 1
+                    shuffle_vector = randperm(nTime);
+                else
+                    shuffle_vector = 1:nTime;
+                end
+
                 targets(spike_trial_idx) = all_data.PacoBMI.(ds.dayIndex).targets(trialIdx);
                 for channelIdx = 1:nChannels
                     for timeIdx = 1:nTime
                         trial_data = raw_data{trialIdx};
                         spikes(spike_trial_idx, channelIdx, timeIdx) = trial_data(timeIdx, channelIdx);
                     end
+                    spikes(spike_trial_idx, channelIdx, 1:nTime) = ...
+                        spikes(spike_trial_idx, channelIdx, shuffle_vector);
                 end
+
                 spike_trial_idx = spike_trial_idx + 1;
             end
             

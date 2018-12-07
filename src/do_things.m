@@ -1,6 +1,10 @@
 % Identify the datasets you'll be using
 dc = BmiExperiment.DatasetCollection('/Volumes/DATA_01/ELZ/VS265/');
-ds = BmiExperiment.Dataset(dc, 'PacoBMI_days.mat', 'Day18'); % adds this dataset to the collection
+
+params = struct;
+params.shuffle = 1;
+params.unit_type = 'direct';
+ds = BmiExperiment.Dataset(dc, 'PacoBMI_days.mat', 'Day18', params); % adds this dataset to the collection
 dc.loadInfo; % loads dataset metadata
 
 % Run a single model for each dataset, and one stitched run with all datasets
@@ -15,7 +19,7 @@ par.c_batch_size = 15; % must be < 1/5 of the min trial count
 par.c_gen_dim = 64; % number of units in generator RNN
 par.c_ic_enc_dim = 64; % number of units in encoder RNN
 par.c_learning_rate_stop = 1e-6; % we can stop really early for the demo
-parSet = par.generateSweep('c_factors_dim', [2 4 6 8, 10, 20, 30, 40, 50]);
+parSet = par.generateSweep('c_factors_dim', [2 4 6 8 10]);
 rc.addParams(parSet);
 
 % Setup which datasets are included in each run, here just the one
