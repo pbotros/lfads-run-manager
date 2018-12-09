@@ -31,15 +31,53 @@ loaded_data = ds.loadData();
 spikes = loaded_data.spikes;
 nChannels = size(spikes, 2);
 
+% ========================
+% Plot real/inferred spike rates and factors across *all* trials
+% ========================
 
-% Random trial to plot factors and spike rates
+% spike_rates_joined: nChannels x (nTime * nTrials)
+spike_rates_joined = reshape(permute(spikes, [2, 3, 1]), nChannels, []);
+num_runs = size(rc.runs, 2);
+
+% Plot Inferred Rates against Real Rates: all trials, all targets
+figure;
+hold on;
+for run_idx = 1:num_runs
+    run = rc.runs(run_idx);
+    means = run.loadPosteriorMeans();
+
+    % inferred_rates_joined: nChannels x (nTime * nTrials)
+    inferred_rates_joined = reshape(means.rates, nChannels, []);
+
+    num_factors = run.params.c_factors_dim;
+    % factors: num_factors x nTime x nTrials
+    factors = means.factors;
+    factors_joined = reshape(factors, num_factors, []);
+
+    ax1 = subplot(3, num_runs, run_idx);
+    imagesc(ax1, inferred_rates_joined);
+    title(ax1, sprintf('%d Factors: Inferred Rates', num_factors));
+
+    ax2 = subplot(3, num_runs, run_idx + num_runs);
+    imagesc(ax2, factors_joined);
+    title(ax2, sprintf('%d Factors: Factors', num_factors));
+end
+
+ax3 = subplot(3, num_runs, [num_runs * 2 + 1, num_runs * 3]);
+imagesc(ax3, spike_rates_joined);
+title(ax3, 'Real Rates');
+hold off;
+
+% ========================
+% Plot a *single* trial's factors and real & inferred spike rates
+% ========================
+% Arbitrary trial to plot factors and spike rates
 trial_idx = 13;
 
 % spike_rates_joined: nChannels x (nTime * nTrials)
 spike_rates_joined = reshape(permute(spikes(trial_idx, :, :), [2, 3, 1]), nChannels, []);
 num_runs = size(rc.runs, 2);
 
-% Plot figure 1: Inferred Rates against Real Rates: all trials, all targets
 figure;
 hold on;
 
@@ -79,11 +117,13 @@ xlabel('Time (bins)');
 ylabel('Neuron');
 hold off;
 
-
-% Figure 1, just 10 factors
+% ========================
+% Plot all factors / spiking rates for a particular LFADS run with 10
+% factors
+% ========================
 figure;
 hold on;
-run_idx = 4; 
+run_idx = 5; 
 run = rc.runs(run_idx);
 means = run.loadPosteriorMeans();
     
@@ -118,6 +158,9 @@ hold off;
 
 
 
+% ========================
+% Condition-averaged plots of smoothed spike patterns
+% ========================
 
 % Find the target with the most trials
 all_targets = sort(unique(loaded_data.targets));
@@ -190,6 +233,11 @@ for channel_to_plot = channels_to_plot
     channel_idx = channel_idx + 1;
 end
 hold off;
+
+
+% ========================
+% T-SNE
+% ========================
 
 % plot T-SNE for the run with the most factors, looks best
 run_idx = num_runs;
