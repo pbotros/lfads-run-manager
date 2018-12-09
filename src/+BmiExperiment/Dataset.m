@@ -8,16 +8,16 @@ classdef Dataset < LFADS.Dataset
         function ds = Dataset(collection, relPath, dayIndex, params)
             ds = ds@LFADS.Dataset(collection, relPath);
             ds.dayIndex = dayIndex;
-            if isfield(params, 'shuffle')
-                ds.shuffle = 1;
-            else
-                ds.shuffle = 0;
-            end
-            if isfield(params, 'unit_type')
-                ds.unit_type = params.unit_type;
-            else
-                ds.unit_type = 'direct';
-            end
+%             if isfield(params, 'shuffle')
+%                 ds.shuffle = 1;
+%             else
+%                 ds.shuffle = 0;
+%             end
+%             if isfield(params, 'unit_type')
+%                 ds.unit_type = params.unit_type;
+%             else
+%                 ds.unit_type = 'direct';
+%             end
         end
 
         function data = loadData(ds)

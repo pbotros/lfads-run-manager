@@ -63,6 +63,46 @@ imagesc(ax3, spike_rates_joined);
 title(ax3, 'Real Rates');
 hold off;
 
+
+% Figure 1, just 10 factors
+figure;
+hold on;
+run_idx = 4; 
+run = rc.runs(run_idx);
+means = run.loadPosteriorMeans();
+    
+% inferred_rates: nTrials x nChannels x nTime
+inferred_rates = permute(means.rates, [3, 1, 2]);
+    
+% inferred_rates_joined: nChannels x (nTime * nTrials)
+inferred_rates_joined = reshape(means.rates, nChannels, []);
+    
+num_factors = run.params.c_factors_dim;
+% factors: num_factors x nTime x nTrials
+factors = means.factors;
+factors_joined = reshape(factors, num_factors, []);
+
+ax1 = subplot(3, 1, 1);
+imagesc(ax1, spike_rates_joined);
+title(ax1, 'Real Rates');
+colorbar
+
+ax2 = subplot(3, 1, 2);
+imagesc(ax2, factors_joined);
+colorbar
+title(ax2, sprintf('%d Factors: Factors', num_factors));
+
+ax3 = subplot(3, 1, 3);
+imagesc(ax3, inferred_rates_joined);
+title(ax3, sprintf('%d Factors: Inferred Rates', num_factors));
+colorbar
+
+hold off;
+
+
+
+
+
 % Find the target with the most trials
 all_targets = sort(unique(loaded_data.targets));
 all_targets = all_targets(all_targets ~= 0);
