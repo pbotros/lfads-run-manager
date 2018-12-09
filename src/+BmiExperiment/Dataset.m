@@ -32,7 +32,7 @@ classdef Dataset < LFADS.Dataset
                 indirect_near_ind = find(~any(isnan(indirect_near_mat),1)); 
                 indirect_far_mat = vertcat(raw_data_indirect_far {1:end});
                 indirect_far_ind = find(~any(isnan(indirect_far_mat),1)); 
-            
+
                 raw_data = cell(size(raw_data_direct)); 
                 for t = 1:size(raw_data,1); 
                     raw_data{t} = [raw_data_direct{t}, ...

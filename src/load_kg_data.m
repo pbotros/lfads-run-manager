@@ -5,8 +5,7 @@ function s = load_kg_data()
     % There's two bin_all_data's that are different; run this one
     run('~/Desktop/KG_MAT/bin_all_data.m');
 
-    % This block filters neurons only used on that day; use all neurons
-    % instead
+    % This block filters neurons only used on that day
     p ='~/Desktop/KG_MAT/BMI_model_data/';
     a='Paco_prediction_15-Jul-2008_1.mat';
     load([p a]);
@@ -58,6 +57,8 @@ function s = load_kg_data()
     s.mu = mu;
     s.R2_prediction = R2_pred;
     
+    s.joint_params_train = Y(train, :);
+    s.joint_params_test = Y(test, :);
     % Use joint_to_cursor.m to go from predicted joint parameters to hand
     % position and velocity
 end
